@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="Imagem/img50x39 ICO.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-forum.css">
+    <title>Forum</title>
+</head>
+<body>
+    <header>
+        <span><a href="index.html" class="linkpags" target="_blank">Página Inicial</a></span>
+        <span><a href="atividades.html" class="linkpags" target="_blank">Atividades</a></span>
+        <span><a href="filmes.html" class="linkpags" target="_blank">Filmes</a></span>
+        <span><a href="artes.html" class="linkpags" target="_blank">Artes</a></span>
+        <span><a href="series.html" class="linkpags" target="_blank">Séries</a></span>
+    </header>
+  <main>
+      <script>
+          // Referencia os elementos do DOM
+const postTitle = document.getElementById('post-title');
+const postContent = document.getElementById('post-content');
+const createPostBtn = document.getElementById('create-post');
+const postsContainer = document.getElementById('posts');
+
+// Carrega os posts salvos ao carregar a página
+document.addEventListener('DOMContentLoaded', loadPosts);
+
+// Função para criar um novo post
+function createPost() {
+    const title = postTitle.value;
+    const content = postContent.value;
+
+    if (title.trim() === '' || content.trim() === '') {
+        alert('Title and content cannot be empty');
+        return;
+    }
+
+    const post = { title, content };
+
+    // Salva o post no LocalStorage
+    savePost(post);
+
+    // Renderiza o novo post na tela
+    renderPost(post);
+
+    // Limpa os campos de entrada
+    postTitle.value = '';
+    postContent.value = '';
+}
+
+// Função para salvar o post no LocalStorage
+function savePost(post) {
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    posts.push(post);
+    localStorage.setItem('posts', JSON.stringify(posts));
+}
+
+// Função para carregar os posts do LocalStorage e renderizar na página
+function loadPosts() {
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+    posts.forEach(post => renderPost(post));
+}
+
+// Função para renderizar um post na página
+function renderPost(post) {
+    const postElement = document.createElement('div');
+    postElement.classList.add('post');
+
+    const postTitleElement = document.createElement('h3');
+    postTitleElement.innerText = post.title;
+
+    const postContentElement = document.createElement('p');
+    postContentElement.innerText = post.content;
+
+    // Botão de excluir post
+    const deleteBtn = document.createElement('button');
+    deleteBtn.innerText = 'Delete';
+    deleteBtn.classList.add('delete-btn');
+    deleteBtn.addEventListener('click', () => deletePost(post, postElement));
+
+    postElement.appendChild(postTitleElement);
+    postElement.appendChild(postContentElement);
+    postElement.appendChild(deleteBtn);
+
+    postsContainer.appendChild(postElement);
+}
+
+// Função para deletar um post
+function deletePost(postToDelete, postElement) {
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    // Remove o post do LocalStorage
+    posts = posts.filter(post => post.title !== postToDelete.title || post.content !== postToDelete.content);
+    localStorage.setItem('posts', JSON.stringify(posts));
+
+    // Remove o post da tela
+    postElement.remove();
+}
+
+// Adiciona um listener ao botão de criar post
+createPostBtn.addEventListener('click', createPost);
+      </script>
+        <div class="forum-container">
+                <h1>Discussion Forum</h1>
+                <div class="new-post">
+                    <h2>Create a New Post</h2>
+                    <input type="text" id="post-title" placeholder="Post title">
+                    <textarea id="post-content" placeholder="Write your post here..."></textarea>
+                    <button id="create-post">Create Post</button>
+                </div>
+
+                <div id="posts">
+                    <h2>Posts</h2>
+                    <!-- Posts will appear here -->
+                </div>
+            </div>
+  </main>
+</body>
